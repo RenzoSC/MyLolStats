@@ -5,7 +5,8 @@ riotkey = "RGAPI-7c2d8ac2-7025-40f2-b544-f2ce87ceaf2a"
 
 # Create your views here.
 def home(request):
-    fetchSumByName("Vinde")
+    id=fetchSumByName("Vinde","id")
+    get_summoner_info(id)
     return render(request,"home.html")
 
 def fetchSumByName(name, opt_get):
@@ -102,13 +103,59 @@ def last20matches_info(matches, name):
                 data["item6"] = participant["item6"]
                 data["primary-rune"] = participant["perks"]["styles"][0]["style"]
                 data["secondary-rune"] = participant["perks"]["styles"][1]["style"]
-        
+        data["summoners"] = {"allyTeam":[], "enemyTeam":[]} 
         for participant in match["info"]["participants"]:
+            summoner = {}
             if participant["win"] == data["win"]:
                 data["teamKills"] += participant["kills"]
+                summoner["name"] = participant["summonerName"]
+                summoner["champ"] = participant["championName"]
+                data["summoners"]["allyTeam"].append(summoner)
             else:
                 data["enemyKills"] += participant["kills"]
+                summoner["name"] = participant["summonerName"]
+                summoner["champ"] = participant["championName"]
+                data["summoners"]["enemyTeam"].append(summoner)
 
         matches_data.append(data)
-
     return data
+
+def get_summoner_info(sumid):
+    """
+    returns an array with info from index 0 : SoloQ // index 1: Flex
+    
+    The elements from the array has this keys:
+        - leagueId --> the summoner's league id
+        - queueType --> (RANKED_SOLO_5x5/RANKED_FLEX_SR)
+        - tier --> the summoner's league (IRON/BRONZE/ETC)
+        - rank --> tier divison (I, II, III, IV)
+        - summonerId --> summoner ID
+        - summonerName --> summoner name
+        - leaguePoints --> LP
+        - wins --> # of games that summoner won on that queueType
+        - losses --> # of games that summoner lost on that queueType
+        - veteran
+        - inactive
+        - freshBlood
+        - hotStreak
+    """
+    url = f"https://la2.api.riotgames.com/lol/league/v4/entries/by-summoner/{sumid}"
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 OPR/99.0.0.0",
+        "Accept-Language": "es,es-419;q=0.9",
+        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Origin": "https://developer.riotgames.com",
+        "X-Riot-Token": riotkey
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+        return data
+    else:
+        print("Error:", response.status_code)
+        return None
+    
