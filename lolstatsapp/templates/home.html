@@ -31,7 +31,7 @@
     </header>
     <div class="container-fluid">
       <div class="row p-4 mt-4">
-        <aside class="col-4">
+        <aside class="col-3">
           <div class="row py-2">
             <h5>Clasificatoria en solitario</h5>
             <div class="col-auto">
@@ -58,7 +58,8 @@
             <h5>Most played friends:</h5>
           </div>
         </aside>
-        <article class="col-6">
+        <article class="col-9">
+          
           <div class="row">
             <div class="row">
               <ul class="list-unstyled d-flex flex-row justify-content-start">
@@ -70,15 +71,83 @@
             <div class="col" id="stats">stast</div>
             <div class="col" id="champions">champs</div>
           </div>
-          <div class="row">
-            <div class="col game">
-              <span>ranked flex</span>
-              <span>derrota</span>
-              <span>26 40</span>
+
+          <div class="row flex-nowrap mt-4 pt-4">
+            <div class="col-2 game d-flex flex-column justify-content-between">
+              <span class="d-block">ranked flex</span>
+              <span class="d-block">derrota</span>
+              <span class="d-block">26 40</span>
             </div>
-            <div class="col info"></div>
-            <div class="col participants"></div>
+            <div class="col-6 ">
+              <div class="row flex-nowrap">
+                <div class="col-auto champion">
+                  <div class="row flex-nowrap">
+                    <div class="col-auto pe-0 pt-1 champ-icon">
+                      <img src="{% static 'img/Zed.png' %}" style="width: 44px; height: 44px;">
+                    </div>
+                    <div class="col-auto px-1 spells">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                    <div class="col-auto px-0 runes">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="col-auto kda">
+                  <span class="d-block">7/8/12</span>
+                  <span class="d-block">2.38:1 KDA</span>
+                </div>
+                <div class="col-auto stats">
+                  <span class="d-block">C/Kill 68%</span>
+                  <span class="d-block">Control Ward 1</span>
+                  <span class="d-block">CS 138 (5.2)</span>
+                </div>
+              </div>
+              <div class="row mt-1" style="height: 22px;">
+                <div class="items">
+                  <ul class="list-unstyled d-flex flex-row">
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                    <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-4 participants">
+              <div class="row">
+                <div class="col team1">
+                  <ul class="list-unstyled mb-0">
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Tynker Suga</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center my-1"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Vinde</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Litoscar</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center my-1"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Amadeus Mozart</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">2 Qiyana 1 Cup</span></li>
+                  </ul>
+                </div>
+                <div class="col team2">
+                  <ul class="list-unstyled mb-0">
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Tynker Suga</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center my-1"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Vinde</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Litoscar</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center my-1"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">Amadeus Mozart</span></li>
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/Sion.png' %}" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">2 Qiyana 1 Cup</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
+
         </article>
       </div>
     </div>
