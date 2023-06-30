@@ -9,7 +9,7 @@ def home(request):
     summoner_info = get_summoner_info(id)
     name = fetchSumByName("2 Qiyana 1 Cup", "name")
     level = fetchSumByName("2 Qiyana 1 Cup", "summonerLevel")
-    icon = fetchSumByName("2 Qiyana 1 Cup", "profileIconId")
+    icon = fetchSumByName("Vinde", "profileIconId")
     return render(request,"home.html",{
         "summonerName": name,
         "summonerLevel": level,

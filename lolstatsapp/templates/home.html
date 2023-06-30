@@ -21,7 +21,7 @@
     <header class="container-fluid bg-body-tertiary py-4">
       <div class="row flex-column flex-lg-row justify-content-center">
         <div class="col-auto" id="summoner-icon">
-          <img src="{% static 'img/3150.png' %}" alt="">
+          <img src="{% static 'img/profileicon/' %}{{ summonerIcon }}.png" alt="" style="width: 64px; height:64px ;">
         </div>
         <div class="col-4" id="summoner-general-info">
           <h2 id="summoner-name" class="d-block"> {{summonerName}}</h2>
@@ -45,7 +45,7 @@
             </div>
           </div>
           {% endfor %}
-          
+
           <!-- 
           <div class="row py-2">
             <h5>Clasificatoria en flexible</h5>
