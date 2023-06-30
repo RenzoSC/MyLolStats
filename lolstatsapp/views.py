@@ -1,13 +1,21 @@
 from django.shortcuts import render
 import requests
 
-riotkey = "RGAPI-7c2d8ac2-7025-40f2-b544-f2ce87ceaf2a"
+riotkey = "RGAPI-6c97554a-bc9c-4bb1-8518-cecfd0a5df24"
 
 # Create your views here.
 def home(request):
-    id=fetchSumByName("Vinde","id")
-    get_summoner_info(id)
-    return render(request,"home.html")
+    id=fetchSumByName("2 Qiyana 1 Cup","id")
+    summoner_info = get_summoner_info(id)
+    name = fetchSumByName("2 Qiyana 1 Cup", "name")
+    level = fetchSumByName("2 Qiyana 1 Cup", "summonerLevel")
+    icon = fetchSumByName("2 Qiyana 1 Cup", "profileIconId")
+    return render(request,"home.html",{
+        "summonerName": name,
+        "summonerLevel": level,
+        "summonerInfo": summoner_info,
+        "summonerIcon" : icon
+    })
 
 def fetchSumByName(name, opt_get):
     """
@@ -153,6 +161,8 @@ def get_summoner_info(sumid):
 
     if response.status_code == 200:
         data = response.json()
+        for info in data:
+            info["winrate"] = int((info["wins"]/(info["wins"] + info["losses"]))*100)
         print(data)
         return data
     else:

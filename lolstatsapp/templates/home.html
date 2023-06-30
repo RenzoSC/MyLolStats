@@ -24,25 +24,29 @@
           <img src="{% static 'img/3150.png' %}" alt="">
         </div>
         <div class="col-4" id="summoner-general-info">
-          <h2 id="summoner-name" class="d-block"> 2 Qiyana 1 Cup</h2>
-          <span id="summoner-level" class="d-block">Level 638</span>
+          <h2 id="summoner-name" class="d-block"> {{summonerName}}</h2>
+          <span id="summoner-level" class="d-block">Level {{summonerLevel}}</span>
         </div>
       </div>
     </header>
     <div class="container-fluid">
       <div class="row p-4 mt-4">
         <aside class="col-3">
+          {% for info in summonerInfo%}
           <div class="row py-2">
-            <h5>Clasificatoria en solitario</h5>
+            <h5>Clasificatoria en {{info.queueType}}</h5>
             <div class="col-auto">
               <img src="{% static 'img/6.png' %}" alt="">
             </div>
             <div class="col">
-              <h6>Diamante 4</h6>
-              <p>88V 85L</p>
-              <p>WinRate 51%</p>
+              <h6>{{info.tier}} {{info.rank}} {{info.leaguePoints}} LP</h6>
+              <p>{{info.wins}}V {{info.losses}}L</p>
+              <p>WinRate {{info.winrate}}%</p>
             </div>
           </div>
+          {% endfor %}
+          
+          <!-- 
           <div class="row py-2">
             <h5>Clasificatoria en flexible</h5>
             <div class="col-auto">
@@ -53,7 +57,7 @@
               <p>63V 44L</p>
               <p>WinRate 59%</p>
             </div>
-          </div>
+          </div> -->
           <div class="row py-2">
             <h5>Most played friends:</h5>
           </div>
