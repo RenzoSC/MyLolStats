@@ -5,19 +5,19 @@ riotkey = "RGAPI-6c97554a-bc9c-4bb1-8518-cecfd0a5df24"
 
 # Create your views here.
 def home(request):
-    id=fetchSumByName("2 Qiyana 1 Cup","id")
-    summoner_info = get_summoner_info(id)
-    name = fetchSumByName("2 Qiyana 1 Cup", "name")
-    level = fetchSumByName("2 Qiyana 1 Cup", "summonerLevel")
-    icon = fetchSumByName("Vinde", "profileIconId")
+    sum=fetchSumByName("Vinde")
+    summoner_info = get_summoner_info(sum["id"])
+    matchs_info = getMatchList(sum["puuid"])
+    matchs_info = lastmatches_info(matchs_info, "Vinde")
     return render(request,"home.html",{
-        "summonerName": name,
-        "summonerLevel": level,
+        "summonerName": sum["name"],
+        "summonerLevel": sum["summonerLevel"],
         "summonerInfo": summoner_info,
-        "summonerIcon" : icon
+        "summonerIcon" : sum["profileIconId"],
+        "matches": matchs_info,
     })
 
-def fetchSumByName(name, opt_get):
+def fetchSumByName(name):
     """
     returns the data (opt_get) from a summoner searched by name
 
@@ -44,12 +44,12 @@ def fetchSumByName(name, opt_get):
     
     if response.status_code == 200:
         data = response.json()
-        return data[opt_get]
+        return data
     else:
-        print("Error:", response.status_code)
+        print("Error: fe ", response.status_code)
         return None
     
-def getMatchList(puuid, count=20):
+def getMatchList(puuid, count=10):
     """
     returns a list of match where index 0 is the most recent and index /count/ is the oldest
 
@@ -73,60 +73,74 @@ def getMatchList(puuid, count=20):
         data = response.json()
         return data
     else:
-        print("Error:", response.status_code)
+        print("Error: ge ", response.status_code)
         return None
     
-def last20matches_info(matches, name):
+def lastmatches_info(matches, name):
     """
-    returns an array[0..19] with info from the last 20 matches
+    returns an array[0..matches.len] with info from the last matches.len matches
     """
     matches_data = []
-
+    queue_type = {400:"Normal reclutamiento", 420:"SoloQ", 430:"Normal", 440:"Flexible", 450:"Aram"}
     for match in matches:
-        data = {}
-        data["gameMode"] = match["info"]["gameMode"]
-        data["duration"] = match["info"]["gameDuration"]
-        data["teamKills"] = 0
-        data["enemyKills"] = 0
-        
-        for participant in match["info"]["participants"]:
-            if participant["summonerName"] == name:
-                data["win"] = participant["win"]
-                data["champId"] = participant["championId"] 
-                data["champName"] = participant["championName"]
-                data["champLevel"] = participant["championLevel"]
-                data["kills"] = participant["kills"]
-                data["deaths"] = participant["deaths"]
-                data["assists"] = participant["assists"]
-                data["kda"] = participant["challenges"]["kda"]
-                data["kill-participation"] = participant["challenges"]["killParticipation"]
-                data["pink-wards"] = participant["visionWardsBoughtInGame"]
-                data["cs"] = participant["totalMinionsKilled"] + participant["neutralMinionsKilled"]
-                data["item0"] = participant["item0"]
-                data["item1"] = participant["item1"]
-                data["item2"] = participant["item2"]
-                data["item3"] = participant["item3"]
-                data["item4"] = participant["item4"]
-                data["item5"] = participant["item5"]
-                data["item6"] = participant["item6"]
-                data["primary-rune"] = participant["perks"]["styles"][0]["style"]
-                data["secondary-rune"] = participant["perks"]["styles"][1]["style"]
-        data["summoners"] = {"allyTeam":[], "enemyTeam":[]} 
-        for participant in match["info"]["participants"]:
-            summoner = {}
-            if participant["win"] == data["win"]:
-                data["teamKills"] += participant["kills"]
-                summoner["name"] = participant["summonerName"]
-                summoner["champ"] = participant["championName"]
-                data["summoners"]["allyTeam"].append(summoner)
-            else:
-                data["enemyKills"] += participant["kills"]
-                summoner["name"] = participant["summonerName"]
-                summoner["champ"] = participant["championName"]
-                data["summoners"]["enemyTeam"].append(summoner)
+        url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match}"
 
-        matches_data.append(data)
-    return data
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 OPR/99.0.0.0",
+            "Accept-Language": "es,es-419;q=0.9",
+            "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Origin": "https://developer.riotgames.com",
+            "X-Riot-Token": riotkey
+        }
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            match = response.json()
+            data = {}
+            y =match["info"]["queueId"]
+            data["gameMode"] = queue_type[y]
+            data["duration"] = match["info"]["gameDuration"]
+            data["teamKills"] = 0
+            data["enemyKills"] = 0
+            
+            for participant in match["info"]["participants"]:
+                if participant["summonerName"] == name:
+                    data["win"] = "Victoria" if participant["win"] else "Derrota"
+                    data["win_b"] = participant["win"]
+                    data["champId"] = participant["championId"] 
+                    data["champName"] = participant["championName"]
+                    data["champLevel"] = participant["champLevel"]
+                    data["kills"] = participant["kills"]
+                    data["deaths"] = participant["deaths"]
+                    data["assists"] = participant["assists"]
+                    data["kda"] = format(participant["challenges"]["kda"], ".2f")
+                    data["killParticipation"] = int(float(format(participant["challenges"]["killParticipation"],".2f"))*100)
+                    data["pinkWards"] = participant["visionWardsBoughtInGame"]
+                    data["cs"] = participant["totalMinionsKilled"] + participant["neutralMinionsKilled"]
+                    data["items"] = [participant["item0"],participant["item1"],participant["item2"],participant["item3"],participant["item4"],participant["item5"],participant["item6"]]
+                    data["primary-rune"] = participant["perks"]["styles"][0]["style"]
+                    data["secondary-rune"] = participant["perks"]["styles"][1]["style"]
+            data["teamsSummoners"] = [[],[]] 
+
+            for participant in match["info"]["participants"]:
+                summoner = {}
+                if participant["win"] == data["win_b"]:
+                    data["teamKills"] += participant["kills"]
+                else:
+                    data["enemyKills"] += participant["kills"]
+
+                x = 0 if participant["teamId"] == 100 else 1        
+                
+                summoner["name"] = participant["summonerName"]
+                summoner["champ"] = participant["championName"]
+                data["teamsSummoners"][x].append(summoner)
+            matches_data.append(data)
+        else:
+            print("Error: la", response.status_code)
+            return None
+        
+    return matches_data
 
 def get_summoner_info(sumid):
     """
@@ -163,9 +177,13 @@ def get_summoner_info(sumid):
         data = response.json()
         for info in data:
             info["winrate"] = int((info["wins"]/(info["wins"] + info["losses"]))*100)
-        print(data)
+            info["tier"] = info["tier"].lower()
+            if info["queueType"] == 'RANKED_SOLO_5x5':
+                info["queueType"] = "SoloQ"
+            elif info["queueType"]  == 'RANKED_FLEX_SR':
+                info["queueType"] = "Flexible"
         return data
     else:
-        print("Error:", response.status_code)
+        print("Error: sum", response.status_code)
         return None
     

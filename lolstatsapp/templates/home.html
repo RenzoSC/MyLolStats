@@ -36,9 +36,9 @@
           <div class="row py-2">
             <h5>Clasificatoria en {{info.queueType}}</h5>
             <div class="col-auto">
-              <img src="{% static 'img/6.png' %}" alt="">
+              <img src="{% static 'img/ranked/' %}{{info.tier}}.png" alt="">
             </div>
-            <div class="col">
+            <div class="col d-flex flex-column justify-content-center">
               <h6>{{info.tier}} {{info.rank}} {{info.leaguePoints}} LP</h6>
               <p>{{info.wins}}V {{info.losses}}L</p>
               <p>WinRate {{info.winrate}}%</p>
@@ -75,9 +75,78 @@
             <div class="col" id="stats">stast</div>
             <div class="col" id="champions">champs</div>
           </div>
-
+          {% for match in matches %}
           <div class="row flex-nowrap mt-4 pt-4">
+            
+            
             <div class="col-2 game d-flex flex-column justify-content-between">
+              <span class="d-block">{{ match.gameMode }}</span>
+              <span class="d-block">{{match.win}}</span>
+              <span class="d-block">{{match.teamKills}} {{match.enemyKills}}</span>
+            </div>
+            <div class="col-6 ">
+              <div class="row flex-nowrap">
+                <div class="col-auto champion">
+                  <div class="row flex-nowrap">
+                    <div class="col-auto pe-0 pt-1 champ-icon">
+                      <img src="{% static 'img/champion/' %}{{match.champName}}.png" style="width: 44px; height: 44px;">
+                    </div>
+                    <div class="col-auto px-1 spells">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                    <div class="col-auto px-0 runes">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="col-auto kda">
+                  <span class="d-block">{{match.kills}}/{{match.deaths}}/{{match.assists}}</span>
+                  <span class="d-block">{{match.kda}} KDA</span>
+                </div>
+                <div class="col-auto stats">
+                  <span class="d-block">C/Kill {{match.killParticipation}}%</span>
+                  <span class="d-block">Control Ward {{match.pinkWards}}</span>
+                  <span class="d-block">CS {{match.cs}} (5.2)</span>
+                </div>
+              </div>
+              <div class="row mt-1" style="height: 22px;">
+                <div class="items">
+                  <ul class="list-unstyled d-flex flex-row align-items-end">
+                    {% for item in match.items %}
+                    {% if item == 0 %}
+                    <li style="width: 22px; height: 22px; background-color: rgb(175, 175, 158);"></li>
+                    {% else %}
+                    <li><img src="{% static 'img/item/' %}{{item}}.png" style="width: 22px; height: 22px;"></li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-4 participants">
+              <div class="row">
+                {% for team in match.teamsSummoners %}
+                <div class="col team1">
+                  <ul class="list-unstyled mb-0">
+                    {% for participant in team %}
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/champion/' %}{{participant.champ}}.png" class="me-1" style="width: 15px; height: 15px;"><span style="font-size: 13px;">{{participant.name}}</span></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            
+          </div>
+          {% endfor %}
+            <!-- <div class="col-2 game d-flex flex-column justify-content-between">
               <span class="d-block">ranked flex</span>
               <span class="d-block">derrota</span>
               <span class="d-block">26 40</span>
@@ -149,8 +218,7 @@
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> -->
 
         </article>
       </div>
