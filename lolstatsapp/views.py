@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import requests
 
-riotkey = "RGAPI-6c97554a-bc9c-4bb1-8518-cecfd0a5df24"
+riotkey = ""
 
 # Create your views here.
 def home(request):
