@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import requests
 
-riotkey = ""
+riotkey = "RGAPI-6c97554a-bc9c-4bb1-8518-cecfd0a5df24"
 
 # Create your views here.
 def home(request):
@@ -103,10 +103,16 @@ def lastmatches_info(matches, name):
             data["duration"] = match["info"]["gameDuration"]
             data["teamKills"] = 0
             data["enemyKills"] = 0
-            
+            data["totalWins"] = 0
+            data["todalDef"] = 0
             for participant in match["info"]["participants"]:
                 if participant["summonerName"] == name:
-                    data["win"] = "Victoria" if participant["win"] else "Derrota"
+                    if participant["win"]:
+                        data["win"] = "Victoria"
+                        data["totalWins"] +=1
+                    else:
+                        data["win"] = "Derrota"
+                        data["todalDef"] +=1
                     data["win_b"] = participant["win"]
                     data["champId"] = participant["championId"] 
                     data["champName"] = participant["championName"]
