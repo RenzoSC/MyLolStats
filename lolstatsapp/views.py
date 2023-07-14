@@ -125,6 +125,8 @@ def lastmatches_info(matches, name):
                     data["pinkWards"] = participant["visionWardsBoughtInGame"]
                     data["cs"] = participant["totalMinionsKilled"] + participant["neutralMinionsKilled"]
                     data["items"] = [participant["item0"],participant["item1"],participant["item2"],participant["item3"],participant["item4"],participant["item5"],participant["item6"]]
+                    data["spell1"] = participant["summoner1Id"]
+                    data["spell2"] = participant["summoner2Id"]
                     data["primary-rune"] = participant["perks"]["styles"][0]["style"]
                     data["secondary-rune"] = participant["perks"]["styles"][1]["style"]
             data["teamsSummoners"] = [[],[]] 
