@@ -14,7 +14,8 @@ def home(request):
         "summonerLevel": sum["summonerLevel"],
         "summonerInfo": summoner_info,
         "summonerIcon" : sum["profileIconId"],
-        "matches": matchs_info,
+        "matches": matchs_info[0],
+        "matches_info" : matchs_info[1]
     })
 
 def fetchSumByName(name):
@@ -80,8 +81,10 @@ def lastmatches_info(matches, name):
     """
     returns an array[0..matches.len] with info from the last matches.len matches
     """
-    matches_data = []
+    matches_data = [[],{}]
     queue_type = {400:"Normal reclutamiento", 420:"SoloQ", 430:"Normal", 440:"Flexible", 450:"Aram"}
+    matches_data[1]["totalWins"] = 0
+    matches_data[1]["totalDef"] = 0
     for match in matches:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match}"
 
@@ -103,16 +106,15 @@ def lastmatches_info(matches, name):
             data["duration"] = match["info"]["gameDuration"]
             data["teamKills"] = 0
             data["enemyKills"] = 0
-            data["totalWins"] = 0
-            data["todalDef"] = 0
+            
             for participant in match["info"]["participants"]:
                 if participant["summonerName"] == name:
                     if participant["win"]:
                         data["win"] = "Victoria"
-                        data["totalWins"] +=1
+                        matches_data[1]["totalWins"] +=1
                     else:
                         data["win"] = "Derrota"
-                        data["todalDef"] +=1
+                        matches_data[1]["totalDef"] +=1
                     data["win_b"] = participant["win"]
                     data["champId"] = participant["championId"] 
                     data["champName"] = participant["championName"]
@@ -143,7 +145,7 @@ def lastmatches_info(matches, name):
                 summoner["name"] = participant["summonerName"]
                 summoner["champ"] = participant["championName"]
                 data["teamsSummoners"][x].append(summoner)
-            matches_data.append(data)
+            matches_data[0].append(data)
         else:
             print("Error: la", response.status_code)
             return None
