@@ -15,7 +15,8 @@ def home(request):
         "summonerInfo": summoner_info,
         "summonerIcon" : sum["profileIconId"],
         "matches": matchs_info[0],
-        "matches_info" : matchs_info[1]
+        "matches_info": matchs_info[1],
+        "totalMatchs" : matchs_info[1]["totalWins"] + matchs_info[1]["totalDef"]
     })
 
 def fetchSumByName(name):

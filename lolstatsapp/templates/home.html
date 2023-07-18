@@ -74,10 +74,10 @@
             </div>
             <div class="col d-flex flex-column" id="stats">
               <span>Stats</span>
-              <div id="matchbar" style="width: 150px; height: 15px; background-color: red;">
-                <div id="winbar" style="width: 50%; height: 100%; background-color: blue;"></div>
+              <div id="matchbar" style="width: 200px; height: 15px; background-color: red;" data-win="{{ matches_info.totalWins }}" data-def="{{ matches_info.totalDef }}">
+                <div id="winbar" style="height: 100%; background-color: blue;"></div>
               </div>
-              <span>{{matches_info.totalWins + matches_info.totalDef}G {matches_info.totalWins}W {matches_info.totalDef}L}</span>
+              <span>{{ totalMatchs }}G {{ matches_info.totalWins }}W {{ matches_info.totalDef }}L</span>
             </div>
             <div class="col" id="champions">champs</div>
           </div>
