@@ -1,0 +1,20 @@
+.lost-card{
+    background-color: #ef6262aa;
+    border-radius: 5px;
+}
+
+.win-card{
+    background-color: #6DA9E4aa;
+    border-radius: 5px;
+}
+
+#matchbar{
+    background-color: #ef6262;
+    width: 200px; 
+    height: 15px;
+}
+
+#winbar{
+    background-color: #6DA9E4 ;
+    height: 100%;
+}

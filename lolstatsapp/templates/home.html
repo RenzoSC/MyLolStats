@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LolStats</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     
@@ -74,8 +75,8 @@
             </div>
             <div class="col d-flex flex-column" id="stats">
               <span>Stats</span>
-              <div id="matchbar" style="width: 200px; height: 15px; background-color: red;" data-win="{{ matches_info.totalWins }}" data-def="{{ matches_info.totalDef }}">
-                <div id="winbar" style="height: 100%; background-color: blue;"></div>
+              <div id="matchbar" data-win="{{ matches_info.totalWins }}" data-def="{{ matches_info.totalDef }}">
+                <div id="winbar"></div>
               </div>
               <span>{{ totalMatchs }}G {{ matches_info.totalWins }}W {{ matches_info.totalDef }}L</span>
             </div>
@@ -85,15 +86,15 @@
                 {% for champ in topchamps %}
                 <li><img src="{% static 'img/champion/' %}{{champ.name}}.png" style="width: 22px; height: 22px;">
                   <span>{{ champ.wr }}%</span>
-                <span>({{ champ.win }}W {{ champ.lose }}L)</span>
-                <span>{{ champ.kda }} KDA</span></li>
+                  <span>({{ champ.win }}W {{ champ.lose }}L)</span>
+                  <span>{{ champ.kda }} KDA</span></li>
                 {% endfor %}
                 
               </ul>
             </div>
           </div>
           {% for match in matches %}
-          <div class="row flex-nowrap mt-4 pt-4">
+          <div class="row flex-nowrap mt-4 p-4 {% if match.win_b %}win-card{% else %}lost-card{% endif %}">
             
             
             <div class="col-2 game d-flex flex-column justify-content-between">
