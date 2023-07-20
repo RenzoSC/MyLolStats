@@ -79,7 +79,18 @@
               </div>
               <span>{{ totalMatchs }}G {{ matches_info.totalWins }}W {{ matches_info.totalDef }}L</span>
             </div>
-            <div class="col" id="champions">champs</div>
+            <div class="col d-flex flex-column" id="champions">
+              <span>champs</span>
+              <ul class="list-unstyled">
+                {% for champ in topchamps %}
+                <li><img src="{% static 'img/champion/' %}{{champ.name}}.png" style="width: 22px; height: 22px;">
+                  <span>{{ champ.wr }}%</span>
+                <span>({{ champ.win }}W {{ champ.lose }}L)</span>
+                <span>{{ champ.kda }} KDA</span></li>
+                {% endfor %}
+                
+              </ul>
+            </div>
           </div>
           {% for match in matches %}
           <div class="row flex-nowrap mt-4 pt-4">

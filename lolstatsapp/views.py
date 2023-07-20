@@ -9,6 +9,7 @@ def home(request):
     summoner_info = get_summoner_info(sum["id"])
     matchs_info = getMatchList(sum["puuid"])
     matchs_info = lastmatches_info(matchs_info, "Vinde")
+    topchamps = [matchs_info[1]["champs_used"][champ] for champ in sorted(matchs_info[1]["champs_used"], key=lambda x: matchs_info[1]["champs_used"][x]['kda'], reverse=True)[:3]]
     return render(request,"home.html",{
         "summonerName": sum["name"],
         "summonerLevel": sum["summonerLevel"],
@@ -16,7 +17,8 @@ def home(request):
         "summonerIcon" : sum["profileIconId"],
         "matches": matchs_info[0],
         "matches_info": matchs_info[1],
-        "totalMatchs" : matchs_info[1]["totalWins"] + matchs_info[1]["totalDef"]
+        "totalMatchs" : matchs_info[1]["totalWins"] + matchs_info[1]["totalDef"],
+        "topchamps" : topchamps,
     })
 
 def fetchSumByName(name):
@@ -86,6 +88,7 @@ def lastmatches_info(matches, name):
     queue_type = {400:"Normal reclutamiento", 420:"SoloQ", 430:"Normal", 440:"Flexible", 450:"Aram"}
     matches_data[1]["totalWins"] = 0
     matches_data[1]["totalDef"] = 0
+    matches_data[1]["champs_used"] = {}
     for match in matches:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match}"
 
@@ -98,7 +101,7 @@ def lastmatches_info(matches, name):
         }
 
         response = requests.get(url, headers=headers)
-
+        
         if response.status_code == 200:
             match = response.json()
             data = {}
@@ -123,7 +126,7 @@ def lastmatches_info(matches, name):
                     data["kills"] = participant["kills"]
                     data["deaths"] = participant["deaths"]
                     data["assists"] = participant["assists"]
-                    data["kda"] = format(participant["challenges"]["kda"], ".2f")
+                    data["kda"] = float(format(participant["challenges"]["kda"], ".2f"))
                     data["killParticipation"] = int(float(format(participant["challenges"]["killParticipation"],".2f"))*100)
                     data["pinkWards"] = participant["visionWardsBoughtInGame"]
                     data["cs"] = participant["totalMinionsKilled"] + participant["neutralMinionsKilled"]
@@ -146,11 +149,37 @@ def lastmatches_info(matches, name):
                 summoner["name"] = participant["summonerName"]
                 summoner["champ"] = participant["championName"]
                 data["teamsSummoners"][x].append(summoner)
+            champ = data["champName"]
+            
+            if champ in matches_data[1]["champs_used"]:
+                matches_data[1]["champs_used"][champ]["count"] +=1
+                matches_data[1]["champs_used"][champ]["kda"] += data["kda"]
+                matches_data[1]["champs_used"][champ]["kda"] /= matches_data[1]["champs_used"][champ]["count"]
+                if data["win_b"]:
+                    matches_data[1]["champs_used"][champ]["win"] +=1
+                    matches_data[1]["champs_used"][champ]["wr"] = int(float(format(matches_data[1]["champs_used"][champ]["win"]/matches_data[1]["champs_used"][champ]["count"], ".2f"))*100)
+                else:
+                    matches_data[1]["champs_used"][champ]["lose"] +=1
+                    matches_data[1]["champs_used"][champ]["wr"] = int(float(format(matches_data[1]["champs_used"][champ]["win"]/matches_data[1]["champs_used"][champ]["count"], ".2f"))*100)
+
+            else:
+                matches_data[1]["champs_used"][champ] = {}
+                matches_data[1]["champs_used"][champ]["count"] =1
+                matches_data[1]["champs_used"][champ]["name"] =champ
+                matches_data[1]["champs_used"][champ]["kda"] = data["kda"]
+                if data["win_b"]:
+                    matches_data[1]["champs_used"][champ]["win"] =1
+                    matches_data[1]["champs_used"][champ]["wr"] = 100
+                    matches_data[1]["champs_used"][champ]["lose"] =0
+                else:
+                    matches_data[1]["champs_used"][champ]["lose"] =1
+                    matches_data[1]["champs_used"][champ]["win"] =0
+                    matches_data[1]["champs_used"][champ]["wr"] = 0
             matches_data[0].append(data)
         else:
             print("Error: la", response.status_code)
             return None
-        
+    print(matches_data[1]["champs_used"])
     return matches_data
 
 def get_summoner_info(sumid):
