@@ -70,6 +70,7 @@ def lastmatches_info(matches, name):
     matches_data[1]["totalWins"] = 0
     matches_data[1]["totalDef"] = 0
     matches_data[1]["champs_used"] = {}
+    i = 0
     for match in matches:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match}"
 
@@ -80,6 +81,8 @@ def lastmatches_info(matches, name):
             "Origin": "https://developer.riotgames.com",
             "X-Riot-Token": riotkey
         }
+
+        print(i)
 
         response = requests.get(url, headers=headers)
         
@@ -109,7 +112,8 @@ def lastmatches_info(matches, name):
                         data["deaths"] = participant["deaths"]
                         data["assists"] = participant["assists"]
                         data["kda"] = float(format(participant["challenges"]["kda"], ".2f"))
-                        data["killParticipation"] = int(float(format(participant["challenges"]["killParticipation"],".2f"))*100)
+                        if "killParticipation" in participant["challenges"].keys():
+                            data["killParticipation"] = int(float(format(participant["challenges"]["killParticipation"],".2f"))*100)
                         data["pinkWards"] = participant["visionWardsBoughtInGame"]
                         data["cs"] = participant["totalMinionsKilled"] + participant["neutralMinionsKilled"]
                         data["items"] = [participant["item0"],participant["item1"],participant["item2"],participant["item3"],participant["item4"],participant["item5"],participant["item6"]]
