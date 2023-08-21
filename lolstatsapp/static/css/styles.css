@@ -18,3 +18,30 @@
     background-color: #6DA9E4 ;
     height: 100%;
 }
+
+.queuetype-win{
+    color: #3179c1;
+    font-weight: bold;
+}
+
+.queuetype-def{
+    color: #c33c3c;
+    font-weight: bold;
+}
+
+.match-result{
+    color: #645151;
+    font-weight: bold;
+}
+
+.match-font{
+    color:  #645151;
+}
+
+.f_selected{
+    background-color: rgba(233,236,239,1);
+}
+
+.search_form{
+    width: 50%;
+}

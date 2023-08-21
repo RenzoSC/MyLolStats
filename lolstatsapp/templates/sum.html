@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LolStats</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    
+    <nav class="navbar sticky-top bg-body-secondary py-3">
+        <div class="container-fluid">
+          <a class="navbar-brand">League of Stats</a>
+          <form class="d-flex" role="search" method="get" action="{% url 'search' %}">
+            <input class="form-control me-2" name="summoner_name" type="search" placeholder="Search summoner in LAS" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+          </form>
+        </div>
+    </nav>
+    <header class="container-fluid bg-body-tertiary py-4">
+      <div class="row flex-column flex-lg-row justify-content-center">
+        <div class="col-auto" id="summoner-icon">
+          <img src="{% static 'img/profileicon/' %}{{ summonerIcon }}.png" alt="" style="width: 64px; height:64px ;">
+        </div>
+        <div class="col-4" id="summoner-general-info">
+          <h2 id="summoner-name" class="d-block"> {{summonerName}}</h2>
+          <span id="summoner-level" class="d-block">Level {{summonerLevel}}</span>
+        </div>
+      </div>
+    </header>
+    <div class="container-fluid">
+      <div class="row p-4 mt-4">
+        <aside class="col-3">
+          {% for info in summonerInfo%}
+          {% if info.queueType != "CHERRY" %}
+            <div class="row py-2">
+              <h5>Clasificatoria en {{info.queueType}}</h5>
+              <div class="col-auto">
+                <img src="{% static 'img/ranked/' %}{{info.tier}}.png" alt="">
+              </div>
+              <div class="col d-flex flex-column justify-content-center">
+                <h6>{{info.tier}} {{info.rank}} {{info.leaguePoints}} LP</h6>
+                <p>{{info.wins}}V {{info.losses}}L</p>
+                <p>WinRate {{info.winrate}}%</p>
+              </div>
+            </div>
+          {% endif %}
+          {% endfor %}
+
+        </aside>
+        <article class="col-9">
+          
+          <div class="row">
+            <div class="row">
+              <ul class="list-unstyled d-flex flex-row justify-content-start">
+                <button class="px-2 py-1 match_filter f_selected " data-filterId="0" onclick="changeFilter(event)">Todos</button>
+                <button class="px-2 py-1 match_filter" data-filterId="1">Clasificatoria Solo Q</button>
+                <button class="px-2 py-1 match_filter" data-filterId="2">Clasificatoria Flex</button>
+              </ul>
+            </div>
+            <div class="col d-flex flex-column" id="stats">
+              <span>Stats in last games:</span>
+              <div id="matchbar" data-win="{{ matches_info.totalWins }}" data-def="{{ matches_info.totalDef }}">
+                <div id="winbar"></div>
+              </div>
+              <span>{{ totalMatchs }}G {{ matches_info.totalWins }}W {{ matches_info.totalDef }}L</span>
+            </div>
+            <div class="col d-flex flex-column" id="champions">
+              <span>Recent champs:</span>
+              <ul class="list-unstyled">
+                {% for champ in topchamps %}
+                <li><img src="{% static 'img/champion/' %}{{champ.name}}.png" style="width: 22px; height: 22px;">
+                  <span>{{ champ.wr }}%</span>
+                  <span>({{ champ.win }}W {{ champ.lose }}L)</span>
+                  <span>{{ champ.kda }} KDA</span></li>
+                {% endfor %}
+                
+              </ul>
+            </div>
+          </div>
+          {% for match in matches %}
+          <div class="row flex-nowrap mt-4 p-4 {% if match.win_b %}win-card{% else %}lost-card{% endif %}">
+            
+            
+            <div class="col-2 game d-flex flex-column justify-content-between">
+              <span class="d-block {% if match.win_b %}queuetype-win{% else %}queuetype-def{% endif %}">{{ match.gameMode }}</span>
+              <span class="d-block match-result">{{match.win}}</span>
+              <span class="d-block match-font">{{match.teamKills}} {{match.enemyKills}}</span>
+            </div>
+            <div class="col-6 ">
+              <div class="row flex-nowrap">
+                <div class="col-auto champion">
+                  <div class="row flex-nowrap">
+                    <div class="col-auto pe-0 pt-1 champ-icon">
+                      <img src="{% static 'img/champion/' %}{{match.champName}}.png" style="width: 44px; height: 44px;">
+                    </div>
+                    <div class="col-auto px-1 spells">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/summoner_spells/'%}{{match.spell1}}.png" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/summoner_spells/'%}{{match.spell2}}.png" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                    <div class="col-auto px-0 runes">
+                      <ul class="list-unstyled">
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                        <li><img src="{% static 'img/6691.png' %}" style="width: 22px; height: 22px;"></li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="col-auto kda">
+                  <span class="d-block match-font">{{match.kills}}/{{match.deaths}}/{{match.assists}}</span>
+                  <span class="d-block match-font">{{match.kda}} KDA</span>
+                </div>
+                <div class="col-auto stats">
+                  <span class="d-block match-font">C/Kill {{match.killParticipation}}%</span>
+                  <span class="d-block match-font">Control Ward {{match.pinkWards}}</span>
+                  <span class="d-block match-font">CS {{match.cs}} (5.2)</span>
+                </div>
+              </div>
+              <div class="row mt-1" style="height: 22px;">
+                <div class="items">
+                  <ul class="list-unstyled d-flex flex-row align-items-end">
+                    {% for item in match.items %}
+                    {% if item == 0 %}
+                    <li style="width: 22px; height: 22px; background-color: rgb(175, 175, 158);"></li>
+                    {% else %}
+                    <li><img src="{% static 'img/item/' %}{{item}}.png" style="width: 22px; height: 22px;"></li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-4 participants">
+              <div class="row">
+                {% for team in match.teamsSummoners %}
+                <div class="col team1">
+                  <ul class="list-unstyled mb-0">
+                    {% for participant in team %}
+                    <li style="height: 18px;" class="d-flex align-items-center"><img src="{% static 'img/champion/' %}{{participant.champ}}.png" class="me-1 " style="width: 15px; height: 15px;"><span class="match-font" style="font-size: 13px;">{{participant.name}}</span></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            
+          </div>
+          {% endfor %}
+        </article>
+      </div>
+    </div>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/charts.js' %}"></script>
+    <script src="{% static 'js/functions.js' %}"></script>
+</body>
+</html>
