@@ -34,7 +34,7 @@ def fetchSumByName(name):
         print("Error: fe ", response.status_code)
         return None
     
-def getMatchList(puuid, count=10):
+def getMatchList(puuid, count=20):
     """
     returns a list of match where index 0 is the most recent and index /count/ is the oldest
 
@@ -61,7 +61,7 @@ def getMatchList(puuid, count=10):
         print("Error: ge ", response.status_code)
         return None
     
-def lastmatches_info(matches, name):
+def lastmatches_info(matches, id):
     """
     returns an array[0..matches.len] with info from the last matches.len matches
     """
@@ -82,7 +82,6 @@ def lastmatches_info(matches, name):
             "X-Riot-Token": riotkey
         }
 
-        print(i)
 
         response = requests.get(url, headers=headers)
         
@@ -97,7 +96,7 @@ def lastmatches_info(matches, name):
                 data["enemyKills"] = 0
                 
                 for participant in match["info"]["participants"]:
-                    if participant["summonerName"] == name:
+                    if participant["summonerId"] == id:
                         if participant["win"]:
                             data["win"] = "Victoria"
                             matches_data[1]["totalWins"] +=1
@@ -122,7 +121,6 @@ def lastmatches_info(matches, name):
                         data["primary-rune"] = participant["perks"]["styles"][0]["style"]
                         data["secondary-rune"] = participant["perks"]["styles"][1]["style"]
                 data["teamsSummoners"] = [[],[]] 
-
                 for participant in match["info"]["participants"]:
                     summoner = {}
                     if participant["win"] == data["win_b"]:
@@ -166,7 +164,6 @@ def lastmatches_info(matches, name):
         else:
             print("Error: la", response.status_code)
             return None
-    print(matches_data[1]["champs_used"])
     return matches_data
 
 def get_summoner_info(sumid):

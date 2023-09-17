@@ -45,3 +45,12 @@
 .search_form{
     width: 50%;
 }
+
+.hidden{
+    display: none;
+}
+
+
+.visible{
+    display: block;
+}

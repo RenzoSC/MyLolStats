@@ -10,7 +10,7 @@ def search(request):
     sum=req.fetchSumByName(request.GET["summoner_name"])
     summoner_info = req.get_summoner_info(sum["id"])
     matchs_info = req.getMatchList(sum["puuid"])
-    matchs_info = req.lastmatches_info(matchs_info, request.GET["summoner_name"])
+    matchs_info = req.lastmatches_info(matchs_info, sum["id"])
     topchamps = [matchs_info[1]["champs_used"][champ] for champ in sorted(matchs_info[1]["champs_used"], key=lambda x: matchs_info[1]["champs_used"][x]['kda'], reverse=True)[:3]]
     return render(request,"sum.html",{
         "summonerName": sum["name"],
